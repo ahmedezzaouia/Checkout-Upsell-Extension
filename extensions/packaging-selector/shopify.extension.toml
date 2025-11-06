@@ -8,6 +8,7 @@ api_version = "2025-07"
 [[extensions]]
 name = "Packaging Selector"
 handle = "packaging-selector"
+uid = "bf026615-6885-d5f4-1d87-ef1ad3c7847de3d0336e"
 type = "ui_extension"
 
 
@@ -46,6 +47,20 @@ api_access = true
 
 [extensions.settings]
 
+# General Settings
+[[extensions.settings.fields]]
+key = "default_selected_option"
+type = "number_integer"
+name = "Default Selected Option"
+description = "Choose which option is preselected on checkout load: 1 (Signature), 2 (Gift Bag), or 3 (Luxury Packaging)"
+
+[[extensions.settings.fields.validations]]
+name = "min"
+value = "1"
+
+[[extensions.settings.fields.validations]]
+name = "max"
+value = "3"
 
 # Layout Settings
 [[extensions.settings.fields]]

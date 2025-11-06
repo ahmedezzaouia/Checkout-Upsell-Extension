@@ -19,7 +19,7 @@ import {
   InlineLayout,
   View,
 } from '@shopify/ui-extensions-react/checkout';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { handlePackagingChange } from './utils/packagingUtils';
 import { handleGiftBag, handleGiftBagQuantityChange } from './utils/giftUpsellUtils';
 import { handleLuxuryPackaging } from './utils/luxuryUpsellUtils';
@@ -37,8 +37,11 @@ function Extension() {
   const settings = useSettings();
   const DEFAULT_IMAGE_URL = "https://images.unsplash.com/photo-1625908733875-efa9c75c084d";
 
-  // State to track stepper value
+  // State to track stepper value and selected option
   const [giftBagQuantity, setGiftBagQuantity] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(
+    ['signature', 'gift-bag', 'luxury-packaging'][settings.default_selected_option - 1 || 0]
+  );
 
   // Get image column width from settings or default to 22%
   const imageColumnWidth = settings.image_column_width ? `${settings.image_column_width}%` : "22%";
@@ -49,7 +52,17 @@ function Extension() {
   // Get square image setting - defaults to true if not set
   const useSquareImages = settings.use_square_images !== false;
 
+  // Apply default selection on mount
+  useEffect(() => {
+    handlePackagingChange(selectedOption, applyAttributeChange, attributes, settings.checkbox1_value || 'Signature');
+    handleGiftBag(applyCartLinesChange, cartLines, selectedOption === 'gift-bag', 1, settings.checkbox2_product_id || '45978405044491');
+    handleLuxuryPackaging(applyCartLinesChange, cartLines, selectedOption === 'luxury-packaging', 1, settings.checkbox3_product_id || '52053529886987');
+  }, []);
+
   const handleOptionChange = async (value) => {
+    // Update selected option
+    setSelectedOption(value);
+    
     // Reset stepper to 1 when choice changes
     setGiftBagQuantity(1);
     
@@ -67,7 +80,7 @@ function Extension() {
   };
 
   return (
-    <ChoiceList name="group-single" value="" onChange={handleOptionChange}>
+    <ChoiceList name="group-single" value={selectedOption} onChange={handleOptionChange}>
       
       {/* Checkbox 1 - Signature Packaging */}
       <Choice id="signature" appearance="monochrome">
