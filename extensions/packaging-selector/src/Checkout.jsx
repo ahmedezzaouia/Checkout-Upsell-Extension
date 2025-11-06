@@ -37,11 +37,11 @@ function Extension() {
   const settings = useSettings();
   const DEFAULT_IMAGE_URL = "https://images.unsplash.com/photo-1625908733875-efa9c75c084d";
 
-  // State to track stepper value and selected option
+  // State to track stepper value
   const [giftBagQuantity, setGiftBagQuantity] = useState(1);
-  const [selectedOption, setSelectedOption] = useState(
-    ['signature', 'gift-bag', 'luxury-packaging'][settings.default_selected_option - 1 || 0]
-  );
+
+  // Get default selected option
+  const defaultValue = ['signature', 'gift-bag', 'luxury-packaging'][(settings.default_selected_option || 1) - 1];
 
   // Get image column width from settings or default to 22%
   const imageColumnWidth = settings.image_column_width ? `${settings.image_column_width}%` : "22%";
@@ -52,17 +52,14 @@ function Extension() {
   // Get square image setting - defaults to true if not set
   const useSquareImages = settings.use_square_images !== false;
 
-  // Apply default selection on mount
+  // Apply the preselected option on mount
   useEffect(() => {
-    handlePackagingChange(selectedOption, applyAttributeChange, attributes, settings.checkbox1_value || 'Signature');
-    handleGiftBag(applyCartLinesChange, cartLines, selectedOption === 'gift-bag', 1, settings.checkbox2_product_id || '45978405044491');
-    handleLuxuryPackaging(applyCartLinesChange, cartLines, selectedOption === 'luxury-packaging', 1, settings.checkbox3_product_id || '52053529886987');
+    handlePackagingChange(defaultValue, applyAttributeChange, attributes, settings.checkbox1_value || 'Signature');
+    handleGiftBag(applyCartLinesChange, cartLines, defaultValue === 'gift-bag', 1, settings.checkbox2_product_id || '45978405044491');
+    handleLuxuryPackaging(applyCartLinesChange, cartLines, defaultValue === 'luxury-packaging', 1, settings.checkbox3_product_id || '52053529886987');
   }, []);
 
   const handleOptionChange = async (value) => {
-    // Update selected option
-    setSelectedOption(value);
-    
     // Reset stepper to 1 when choice changes
     setGiftBagQuantity(1);
     
@@ -80,7 +77,7 @@ function Extension() {
   };
 
   return (
-    <ChoiceList name="group-single" value={selectedOption} onChange={handleOptionChange}>
+    <ChoiceList name="group-single" value={defaultValue} onChange={handleOptionChange}>
       
       {/* Checkbox 1 - Signature Packaging */}
       <Choice id="signature" appearance="monochrome">
