@@ -37,47 +37,39 @@ function Extension() {
   const settings = useSettings();
   const DEFAULT_IMAGE_URL = "https://images.unsplash.com/photo-1625908733875-efa9c75c084d";
 
-  // State to track stepper value
-  const [giftBagQuantity, setGiftBagQuantity] = useState(1);
-
-  // Get default selected option
   const defaultValue = ['signature', 'gift-bag', 'luxury-packaging'][(settings.default_selected_option || 1) - 1];
-
-  // Get image column width from settings or default to 22%
   const imageColumnWidth = settings.image_column_width ? `${settings.image_column_width}%` : "22%";
-
-  // Get stepper visibility setting - defaults to true if not set
   const showStepper = settings.checkbox2_show_stepper !== false;
-
-  // Get square image setting - defaults to true if not set
   const useSquareImages = settings.use_square_images !== false;
 
-  // Apply the preselected option on mount
+  const [selectedOption, setSelectedOption] = useState(defaultValue);
+  const [giftBagQuantity, setGiftBagQuantity] = useState(1);
+
+  // Apply initial selection
   useEffect(() => {
-    handlePackagingChange(defaultValue, applyAttributeChange, attributes, settings.checkbox1_value || 'Signature');
-    handleGiftBag(applyCartLinesChange, cartLines, defaultValue === 'gift-bag', 1, settings.checkbox2_product_id || '45978405044491');
-    handleLuxuryPackaging(applyCartLinesChange, cartLines, defaultValue === 'luxury-packaging', 1, settings.checkbox3_product_id || '52053529886987');
+    applySelection(defaultValue, 1);
   }, []);
 
-  const handleOptionChange = async (value) => {
-    // Reset stepper to 1 when choice changes
-    setGiftBagQuantity(1);
-    
-    // Handle packaging logic 
-    await handlePackagingChange(value, applyAttributeChange, attributes, settings.checkbox1_value || 'Signature');
+  const applySelection = async (option, quantity = 1) => {
+    await handlePackagingChange(option, applyAttributeChange, attributes, settings.checkbox1_value || 'Signature');
+    await handleGiftBag(applyCartLinesChange, cartLines, option === 'gift-bag', quantity, settings.checkbox2_product_id || '45978405044491');
+    await handleLuxuryPackaging(applyCartLinesChange, cartLines, option === 'luxury-packaging', 1, settings.checkbox3_product_id || '52053529886987');
+  };
 
-    // Handle upsell logic with configurable product IDs
-    await handleGiftBag(applyCartLinesChange, cartLines, value === 'gift-bag', 1, settings.checkbox2_product_id || '45978405044491');
-    await handleLuxuryPackaging(applyCartLinesChange, cartLines, value === 'luxury-packaging', 1, settings.checkbox3_product_id || '52053529886987');
+  const handleOptionChange = async (value) => {
+    setSelectedOption(value);
+    setGiftBagQuantity(1);
+    await applySelection(value, 1);
   };
 
   const handleStepperChange = async (quantity) => {
     setGiftBagQuantity(quantity);
-    await handleGiftBagQuantityChange(applyCartLinesChange, cartLines, quantity, settings.checkbox2_product_id || '45978405044491');
+    setSelectedOption('gift-bag');
+    await applySelection('gift-bag', quantity);
   };
 
   return (
-    <ChoiceList name="group-single" value={defaultValue} onChange={handleOptionChange}>
+    <ChoiceList name="group-single" value={selectedOption} onChange={handleOptionChange}>
       
       {/* Checkbox 1 - Signature Packaging */}
       <Choice id="signature" appearance="monochrome">
