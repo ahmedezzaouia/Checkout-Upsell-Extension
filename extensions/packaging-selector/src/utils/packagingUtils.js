@@ -7,14 +7,15 @@
  * @param {string} value - The selected packaging option
  * @param {Function} applyAttributeChange - Function to apply attribute changes
  * @param {Array} attributes - Current cart attributes to check if packaging exists
+ * @param {string} customValue - Custom value for signature packaging from settings
  */
-export const handlePackagingChange = async (value, applyAttributeChange, attributes = []) => {  
+export const handlePackagingChange = async (value, applyAttributeChange, attributes = [], customValue = 'Signature') => {  
   if (value === 'signature') {
     try {
       const result = await applyAttributeChange({
         type: 'updateAttribute',
         key: 'packaging',
-        value: 'Signature',
+        value: customValue,
       });
 
       if (result.type === 'error') {

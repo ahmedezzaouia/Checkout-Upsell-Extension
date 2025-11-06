@@ -44,9 +44,112 @@ api_access = true
 # your extension. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#settings-definition
 
-# [extensions.settings]
-# [[extensions.settings.fields]]
-# key = "banner_title"
-# type = "single_line_text_field"
-# name = "Banner title"
-# description = "Enter a title for the banner"
+[extensions.settings]
+
+
+# Layout Settings
+[[extensions.settings.fields]]
+key = "image_column_width"
+type = "number_integer"
+name = "Image Column Width (%)"
+description = "Set the width percentage for the image column (10-60%)"
+
+[[extensions.settings.fields.validations]]
+name = "min"
+value = "10"
+
+[[extensions.settings.fields.validations]]
+name = "max"
+value = "60"
+
+[[extensions.settings.fields]]
+key = "use_square_images"
+type = "boolean"
+name = "Full Height (100%)"
+
+# Checkbox 1 Settings
+[[extensions.settings.fields]]
+key = "checkbox1_title"
+type = "single_line_text_field"
+name = "Checkbox 1 - Title"
+description = "Enter the title for the first checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox1_description"
+type = "multi_line_text_field"
+name = "Checkbox 1 - Description"
+description = "Enter the description for the first checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox1_value"
+type = "single_line_text_field"
+name = "Checkbox 1 - Cart Attribute Value"
+description = "Enter the value to be saved in order attributes when this checkbox is selected"
+
+# Checkbox 2 Settings
+[[extensions.settings.fields]]
+key = "checkbox2_product_id"
+type = "single_line_text_field"
+name = "Checkbox 2 - Variant ID"
+description = "Enter the Variant ID for the second checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox2_image_url"
+type = "single_line_text_field"
+name = "Checkbox 2 - Image URL"
+description = "Enter the image URL for the second checkbox (leave empty for default)"
+
+[[extensions.settings.fields]]
+key = "checkbox2_title"
+type = "single_line_text_field"
+name = "Checkbox 2 - Title"
+description = "Enter the title for the second checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox2_description"
+type = "multi_line_text_field"
+name = "Checkbox 2 - Description"
+description = "Enter the description for the second checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox2_price"
+type = "single_line_text_field"
+name = "Checkbox 2 - Price"
+description = "Enter the price for the second checkbox (e.g., £1.50)"
+
+[[extensions.settings.fields]]
+key = "checkbox2_show_stepper"
+type = "boolean"
+name = "Checkbox 2 - Show Quantity Selector"
+description = "Enable quantity selection for the second checkbox"
+
+# Checkbox 3 Settings
+[[extensions.settings.fields]]
+key = "checkbox3_product_id"
+type = "single_line_text_field"
+name = "Checkbox 3 - Variant ID"
+description = "Enter the Variant ID for the third checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox3_image_url"
+type = "single_line_text_field"
+name = "Checkbox 3 - Image URL"
+description = "Enter the image URL for the third checkbox (leave empty for default)"
+
+[[extensions.settings.fields]]
+key = "checkbox3_title"
+type = "single_line_text_field"
+name = "Checkbox 3 - Title"
+description = "Enter the title for the third checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox3_description"
+type = "multi_line_text_field"
+name = "Checkbox 3 - Description"
+description = "Enter the description for the third checkbox"
+
+[[extensions.settings.fields]]
+key = "checkbox3_price"
+type = "single_line_text_field"
+name = "Checkbox 3 - Price"
+description = "Enter the price for the third checkbox (e.g., £5.00)"

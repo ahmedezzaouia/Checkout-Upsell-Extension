@@ -2,7 +2,20 @@
  * Luxury upsell utility functions
  */
 
-const LUXURY_PACKAGING_VARIANT_ID = 'gid://shopify/ProductVariant/52053529886987';
+/**
+ * Generates the Shopify variant ID from a product ID
+ * @param {string} productId - The product ID
+ * @returns {string} The Shopify variant ID
+ */
+const getVariantId = (productId) => {
+  if (!productId) return null;
+  // If it's already a full Shopify ID, return as is
+  if (productId.startsWith('gid://shopify/ProductVariant/')) {
+    return productId;
+  }
+  // Otherwise, construct the variant ID
+  return `gid://shopify/ProductVariant/${productId}`;
+};
 
 /**
  * Handles Luxury Packaging cart line operations (add/remove/update quantity)
@@ -10,10 +23,18 @@ const LUXURY_PACKAGING_VARIANT_ID = 'gid://shopify/ProductVariant/52053529886987
  * @param {Array} cartLines - Current cart lines
  * @param {boolean} shouldAdd - Whether to add (true) or remove (false) the luxury packaging
  * @param {number} quantity - Quantity for the luxury packaging (default: 1)
+ * @param {string} productId - The configurable product ID for the luxury packaging
  */
-export const handleLuxuryPackaging = async (applyCartLinesChange, cartLines, shouldAdd, quantity = 1) => {
+export const handleLuxuryPackaging = async (applyCartLinesChange, cartLines, shouldAdd, quantity = 1, productId = null) => {
+  const luxuryPackagingVariantId = getVariantId(productId);
+  
+  if (!luxuryPackagingVariantId && shouldAdd) {
+    console.warn('⚠️ Luxury packaging product ID not configured');
+    return;
+  }
+
   const luxuryPackagingLine = cartLines.find(line => 
-    line.merchandise?.id === LUXURY_PACKAGING_VARIANT_ID
+    line.merchandise?.id === luxuryPackagingVariantId
   );
 
   if (shouldAdd) {
@@ -37,7 +58,7 @@ export const handleLuxuryPackaging = async (applyCartLinesChange, cartLines, sho
       try {
         const result = await applyCartLinesChange({
           type: 'addCartLine',
-          merchandiseId: LUXURY_PACKAGING_VARIANT_ID,
+          merchandiseId: luxuryPackagingVariantId,
           quantity: quantity,
         });
 
