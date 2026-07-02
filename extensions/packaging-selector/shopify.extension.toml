@@ -47,41 +47,6 @@ api_access = true
 
 [extensions.settings]
 
-# General Settings
-[[extensions.settings.fields]]
-key = "default_selected_option"
-type = "number_integer"
-name = "Default Selected Option"
-description = "Choose which option is preselected on checkout load: 1 (Signature), 2 (Gift Bag), or 3 (Luxury Packaging)"
-
-[[extensions.settings.fields.validations]]
-name = "min"
-value = "1"
-
-[[extensions.settings.fields.validations]]
-name = "max"
-value = "3"
-
-# Layout Settings
-[[extensions.settings.fields]]
-key = "image_column_width"
-type = "number_integer"
-name = "Image Column Width (%)"
-description = "Set the width percentage for the image column (10-60%)"
-
-[[extensions.settings.fields.validations]]
-name = "min"
-value = "10"
-
-[[extensions.settings.fields.validations]]
-name = "max"
-value = "60"
-
-[[extensions.settings.fields]]
-key = "use_square_images"
-type = "boolean"
-name = "Full Height (100%)"
-
 # Checkbox 1 Settings
 [[extensions.settings.fields]]
 key = "checkbox1_title"
@@ -93,13 +58,13 @@ description = "Enter the title for the first checkbox"
 key = "checkbox1_description"
 type = "multi_line_text_field"
 name = "Checkbox 1 - Description"
-description = "Enter the description for the first checkbox"
+description = "Full description for this option. Use a blank line or single line break between paragraphs."
 
 [[extensions.settings.fields]]
-key = "checkbox1_value"
+key = "checkbox1_image_url"
 type = "single_line_text_field"
-name = "Checkbox 1 - Cart Attribute Value"
-description = "Enter the value to be saved in order attributes when this checkbox is selected"
+name = "Checkbox 1 - Image URL"
+description = "Enter the image URL for the first checkbox (leave empty for default)"
 
 # Checkbox 2 Settings
 [[extensions.settings.fields]]
@@ -124,21 +89,14 @@ description = "Enter the title for the second checkbox"
 key = "checkbox2_description"
 type = "multi_line_text_field"
 name = "Checkbox 2 - Description"
-description = "Enter the description for the second checkbox"
+description = "Full description for this option. Use a blank line or single line break between paragraphs."
 
 [[extensions.settings.fields]]
-key = "checkbox2_price"
+key = "checkbox2_value"
 type = "single_line_text_field"
-name = "Checkbox 2 - Price"
-description = "Enter the price for the second checkbox (e.g., £1.50)"
+name = "Checkbox 2 - Cart Attribute Value"
+description = "Enter the value saved in order attributes when this option is selected"
 
-[[extensions.settings.fields]]
-key = "checkbox2_show_stepper"
-type = "boolean"
-name = "Checkbox 2 - Show Quantity Selector"
-description = "Enable quantity selection for the second checkbox"
-
-# Checkbox 3 Settings
 [[extensions.settings.fields]]
 key = "checkbox3_product_id"
 type = "single_line_text_field"
@@ -161,10 +119,35 @@ description = "Enter the title for the third checkbox"
 key = "checkbox3_description"
 type = "multi_line_text_field"
 name = "Checkbox 3 - Description"
-description = "Enter the description for the third checkbox"
+description = "Full description for this option. Use a blank line or single line break between paragraphs."
 
 [[extensions.settings.fields]]
-key = "checkbox3_price"
+key = "checkbox3_value"
 type = "single_line_text_field"
-name = "Checkbox 3 - Price"
-description = "Enter the price for the third checkbox (e.g., £5.00)"
+name = "Checkbox 3 - Cart Attribute Value"
+description = "Enter the value saved in order attributes when this option is selected"
+
+# Gift Orders Settings
+[[extensions.settings.fields]]
+key = "gift_title"
+type = "single_line_text_field"
+name = "Gift Orders - Title"
+description = "Enter the title for the gift orders block"
+
+[[extensions.settings.fields]]
+key = "gift_description"
+type = "multi_line_text_field"
+name = "Gift Orders - Description"
+description = "Full description for this option. Use a blank line or single line break between paragraphs."
+
+[[extensions.settings.fields]]
+key = "gift_image_url"
+type = "single_line_text_field"
+name = "Gift Orders - Image URL"
+description = "Enter the image URL for the gift orders block (leave empty for default)"
+
+[[extensions.settings.fields]]
+key = "gift_note_value"
+type = "single_line_text_field"
+name = "Gift Orders - Cart Attribute Value"
+description = "Enter the value saved in order attributes when gift orders is checked"

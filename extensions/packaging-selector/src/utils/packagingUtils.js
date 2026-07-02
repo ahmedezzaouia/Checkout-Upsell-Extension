@@ -1,46 +1,40 @@
 /**
- * Packaging utility functions
+ * Packaging cart attribute — sets packaging for whichever option is selected.
  */
 
 /**
- * Handles packaging option changes and updates cart attributes
- * @param {string} value - The selected packaging option
- * @param {Function} applyAttributeChange - Function to apply attribute changes
- * @param {Array} attributes - Current cart attributes to check if packaging exists
- * @param {string} customValue - Custom value for signature packaging from settings
+ * @param {string} option - signature | gift-bag | luxury-packaging
+ * @param {Function} applyAttributeChange
+ * @param {{ signature: string, giftBag: string, luxury: string }} attributeValues
  */
-export const handlePackagingChange = async (value, applyAttributeChange, attributes = [], customValue = 'Signature') => {  
-  if (value === 'signature') {
-    try {
-      const result = await applyAttributeChange({
-        type: 'updateAttribute',
-        key: 'packaging',
-        value: customValue,
-      });
+export const handlePackagingChange = async (
+  option,
+  applyAttributeChange,
+  attributeValues,
+) => {
+  const valueByOption = {
+    signature: attributeValues.signature,
+    'gift-bag': attributeValues.giftBag,
+    'luxury-packaging': attributeValues.luxury,
+  };
 
-      if (result.type === 'error') {
-        console.error('❌ Error updating attribute:', result.message);
-      }
-    } catch (error) {
-      console.error('❌ Error:', error);
-    }
-  } else {
-    // Only remove packaging attribute if it exists
-    const packagingAttribute = attributes.find(attr => attr.key === 'packaging');
-    
-    if (packagingAttribute) {
-      try {
-        const result = await applyAttributeChange({
-          type: 'removeAttribute',
-          key: 'packaging',
-        });
+  const packagingValue = valueByOption[option];
 
-        if (result.type === 'error') {
-          console.error('❌ Error removing attribute:', result.message);
-        }
-      } catch (error) {
-        console.error('❌ Error:', error);
-      }
+  if (!packagingValue) {
+    return;
+  }
+
+  try {
+    const result = await applyAttributeChange({
+      type: 'updateAttribute',
+      key: 'packaging',
+      value: packagingValue,
+    });
+
+    if (result.type === 'error') {
+      console.error('❌ Error updating packaging attribute:', result.message);
     }
+  } catch (error) {
+    console.error('❌ Error updating packaging attribute:', error);
   }
 };

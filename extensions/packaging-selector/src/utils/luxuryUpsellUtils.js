@@ -1,49 +1,42 @@
 /**
- * Luxury upsell utility functions
+ * Luxury packaging upsell — adds/updates/removes selector-attributed cart lines only.
  */
 
-/**
- * Generates the Shopify variant ID from a product ID
- * @param {string} productId - The product ID
- * @returns {string} The Shopify variant ID
- */
-const getVariantId = (productId) => {
-  if (!productId) return null;
-  // If it's already a full Shopify ID, return as is
-  if (productId.startsWith('gid://shopify/ProductVariant/')) {
-    return productId;
-  }
-  // Otherwise, construct the variant ID
-  return `gid://shopify/ProductVariant/${productId}`;
-};
+import { PACKAGING_SELECTOR_ATTR, hasSelectorAttribute } from './lineAttribution';
+import { toVariantGid } from './packagingPriceUtils';
 
 /**
- * Handles Luxury Packaging cart line operations (add/remove/update quantity)
- * @param {Function} applyCartLinesChange - Function to apply cart line changes
- * @param {Array} cartLines - Current cart lines
- * @param {boolean} shouldAdd - Whether to add (true) or remove (false) the luxury packaging
- * @param {number} quantity - Quantity for the luxury packaging (default: 1)
- * @param {string} productId - The configurable product ID for the luxury packaging
+ * @param {Function} applyCartLinesChange
+ * @param {Array} cartLines
+ * @param {boolean} shouldAdd
+ * @param {number} quantity
+ * @param {string | null} productId
  */
-export const handleLuxuryPackaging = async (applyCartLinesChange, cartLines, shouldAdd, quantity = 1, productId = null) => {
-  const luxuryPackagingVariantId = getVariantId(productId);
+export const handleLuxuryPackaging = async (
+  applyCartLinesChange,
+  cartLines,
+  shouldAdd,
+  quantity = 1,
+  productId = null,
+) => {
+  const luxuryPackagingVariantId = toVariantGid(productId);
   
   if (!luxuryPackagingVariantId && shouldAdd) {
     console.warn('⚠️ Luxury packaging product ID not configured');
     return;
   }
 
-  const luxuryPackagingLine = cartLines.find(line => 
-    line.merchandise?.id === luxuryPackagingVariantId
+  const luxuryPackagingSelectorLine = cartLines.find((line) =>
+    line.merchandise?.id === luxuryPackagingVariantId && hasSelectorAttribute(line, 'luxury-packaging')
   );
 
   if (shouldAdd) {
-    if (luxuryPackagingLine) {
-      // Update existing luxury packaging quantity
+    if (luxuryPackagingSelectorLine) {
+      // Update existing selector-added luxury packaging quantity
       try {
         const result = await applyCartLinesChange({
           type: 'updateCartLine',
-          id: luxuryPackagingLine.id,
+          id: luxuryPackagingSelectorLine.id,
           quantity: quantity,
         });
 
@@ -54,12 +47,13 @@ export const handleLuxuryPackaging = async (applyCartLinesChange, cartLines, sho
         console.error('❌ Error updating luxury packaging quantity:', error);
       }
     } else {
-      // Add new luxury packaging
+      // Add new luxury packaging with selector attribute (so we only remove our line, not manual)
       try {
         const result = await applyCartLinesChange({
           type: 'addCartLine',
           merchandiseId: luxuryPackagingVariantId,
           quantity: quantity,
+          attributes: [{ key: PACKAGING_SELECTOR_ATTR, value: 'luxury-packaging' }],
         });
 
         if (result.type === 'error') {
@@ -70,16 +64,15 @@ export const handleLuxuryPackaging = async (applyCartLinesChange, cartLines, sho
       }
     }
   } else {
-    // Remove luxury packaging
-    if (!luxuryPackagingLine) {
-      console.log('ℹ️ Luxury packaging not in cart');
+    // Remove only selector-added luxury packaging (never touch manually-added lines)
+    if (!luxuryPackagingSelectorLine) {
       return;
     }
 
     try {
       const result = await applyCartLinesChange({
         type: 'updateCartLine',
-        id: luxuryPackagingLine.id,
+        id: luxuryPackagingSelectorLine.id,
         quantity: 0,
       });
 
