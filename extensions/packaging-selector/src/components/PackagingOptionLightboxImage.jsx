@@ -11,7 +11,7 @@ import {
 
 const BLOCK_CORNER_RADIUS = 'none';
 
-/** Mobile ~73.5px, desktop ~107px per Mejuri reference */
+/** Mobile ~74px, desktop ~107px */
 const PACKAGING_IMAGE_SIZE = Style.default(74).when(
   { viewportInlineSize: { min: 'medium' } },
   107,

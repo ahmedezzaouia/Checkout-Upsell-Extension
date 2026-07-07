@@ -1,6 +1,5 @@
 import { Fragment } from 'react';
 import {
-  View,
   TextBlock,
   Text,
   BlockStack,
@@ -8,9 +7,6 @@ import {
 } from '@shopify/ui-extensions-react/checkout';
 
 export const OPTION_DESCRIPTION_SIZE = 'small';
-
-/** Simulates ~#333 body copy between subdued grey and solid black */
-const OPTION_DESCRIPTION_OPACITY = 92;
 
 /**
  * Normalizes setting copy from the checkout editor.
@@ -101,6 +97,7 @@ function renderParagraphWithBoldPhrase(paragraph, boldPhrase) {
         <Text
           key={`emphasis-${index}`}
           size={OPTION_DESCRIPTION_SIZE}
+          appearance="subdued"
           emphasis="bold"
           accessibilityRole="strong"
         >
@@ -114,14 +111,14 @@ function renderParagraphWithBoldPhrase(paragraph, boldPhrase) {
 }
 
 /**
- * Description copy — small size, dark charcoal (mockup body text).
+ * Description copy — small size, subdued grey body text.
  * @param {{ children: import('react').ReactNode }} props
  */
 export function OptionDescriptionText({ children }) {
   return (
-    <View opacity={OPTION_DESCRIPTION_OPACITY}>
-      <TextBlock size={OPTION_DESCRIPTION_SIZE}>{children}</TextBlock>
-    </View>
+    <TextBlock size={OPTION_DESCRIPTION_SIZE} appearance="subdued">
+      {children}
+    </TextBlock>
   );
 }
 

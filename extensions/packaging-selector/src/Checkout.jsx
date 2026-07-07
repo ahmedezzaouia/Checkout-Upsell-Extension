@@ -40,9 +40,7 @@ import {
 import { PackagingOptionLightboxImage } from './components/PackagingOptionLightboxImage.jsx';
 import {
   GiftBagQuantitySelector,
-  getSharedDescriptionBlockSize,
   ResponsiveTitleText,
-  PackagingOptionDescription,
   PackagingOptionRow,
 } from './components/PackagingOptionRow.jsx';
 import {
@@ -178,11 +176,6 @@ function Extension() {
     DEFAULT_LUXURY_DESCRIPTION,
   );
 
-  const sharedDescriptionBlockSize = getSharedDescriptionBlockSize(
-    [signatureDescription, giftBagDescription, luxuryDescription],
-    { showStepper, stepperIndex: 1 },
-  );
-
   const giftNoteAttr = attributes.find((attr) => attr.key === GIFT_NOTE_ATTR);
   const giftMessageAttr = attributes.find(
     (attr) => attr.key === GIFT_MESSAGE_ATTR,
@@ -235,7 +228,7 @@ function Extension() {
           cornerRadius={BLOCK_CORNER_RADIUS}
           overflow="hidden"
         >
-          <View padding="base">
+          <View padding="loose">
             <PackagingOptionRow
               title={signatureTitle}
               price={signaturePriceLabel}
@@ -245,16 +238,14 @@ function Extension() {
               imageAlt={signatureTitle}
               modalId="packaging-image-signature"
             >
-              <PackagingOptionDescription minBlockSize={sharedDescriptionBlockSize}>
-                <OptionDescriptionContent
-                  text={signatureDescription}
-                  boldPhrase="this is a gift"
-                />
-              </PackagingOptionDescription>
+              <OptionDescriptionContent
+                text={signatureDescription}
+                boldPhrase="this is a gift"
+              />
             </PackagingOptionRow>
           </View>
           <Divider />
-          <View padding="base">
+          <View padding="loose">
             <PackagingOptionRow
               title={giftBagTitle}
               price={giftBagPriceLabel}
@@ -264,24 +255,22 @@ function Extension() {
               imageAlt={giftBagTitle}
               modalId="packaging-image-gift-bag"
             >
-              <PackagingOptionDescription minBlockSize={sharedDescriptionBlockSize}>
-                <BlockStack spacing="none">
-                  <OptionDescriptionContent text={giftBagDescription} />
-                  {showStepper && (
-                    <>
-                      <BlockSpacer spacing="base" />
-                      <GiftBagQuantitySelector
-                        quantity={giftBagQuantity}
-                        onChange={handleStepperChange}
-                      />
-                    </>
-                  )}
-                </BlockStack>
-              </PackagingOptionDescription>
+              <BlockStack spacing="none">
+                <OptionDescriptionContent text={giftBagDescription} />
+                {showStepper && (
+                  <>
+                    <BlockSpacer spacing="base" />
+                    <GiftBagQuantitySelector
+                      quantity={giftBagQuantity}
+                      onChange={handleStepperChange}
+                    />
+                  </>
+                )}
+              </BlockStack>
             </PackagingOptionRow>
           </View>
           <Divider />
-          <View padding="base">
+          <View padding="loose">
             <PackagingOptionRow
               title={luxuryTitle}
               price={luxuryPriceLabel}
@@ -291,9 +280,7 @@ function Extension() {
               imageAlt={luxuryTitle}
               modalId="packaging-image-luxury"
             >
-              <PackagingOptionDescription minBlockSize={sharedDescriptionBlockSize}>
-                <OptionDescriptionContent text={luxuryDescription} />
-              </PackagingOptionDescription>
+              <OptionDescriptionContent text={luxuryDescription} />
             </PackagingOptionRow>
           </View>
         </View>
@@ -313,23 +300,23 @@ function Extension() {
           cornerRadius={BLOCK_CORNER_RADIUS}
           overflow="hidden"
         >
-          <View padding="base">
+          <View padding="loose">
             <InlineLayout
               columns={['fill', 'auto']}
               blockAlignment="start"
-              spacing="base"
+              spacing="loose"
             >
               <InlineLayout
                 columns={['auto', 'fill']}
                 blockAlignment="start"
-                spacing="base"
+                spacing="loose"
               >
                 <Checkbox
                   checked={isGift}
                   onChange={handleGiftToggle}
                   accessibilityLabel={giftTitle}
                 />
-                <BlockStack spacing="tight">
+                <BlockStack spacing="base">
                   <Pressable
                     onPress={() => handleGiftToggle(!isGift)}
                     accessibilityLabel={giftTitle}
