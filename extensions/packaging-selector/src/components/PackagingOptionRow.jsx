@@ -7,16 +7,25 @@ import {
   InlineStack,
   BlockStack,
 } from '@shopify/ui-extensions-react/checkout';
-import { PackagingOptionLightboxImage } from './PackagingOptionLightboxImage.jsx';
+import { PackagingOptionImageColumn } from './PackagingOptionLightboxImage.jsx';
+import {
+  DESKTOP_ONLY_DISPLAY,
+  MOBILE_ONLY_DISPLAY,
+  OPTION_ROW_SPACING,
+  TITLE_BODY_SPACING,
+} from './responsiveLayout.js';
+
+const MOBILE_BODY_TEXT_SIZE = 'extraSmall';
+const OPTION_TEXT_SIZE = 'small';
 
 /**
- * Option title — same size as body copy, bold when emphasised.
+ * Option title — stays small on all viewports for hierarchy over body copy.
  * @param {{ children: import('react').ReactNode, emphasis?: 'bold' }} props
  */
 export function ResponsiveTitleText({ children, emphasis }) {
   return (
     <Text
-      size="small"
+      size={OPTION_TEXT_SIZE}
       emphasis={emphasis}
       accessibilityRole={emphasis === 'bold' ? 'strong' : undefined}
     >
@@ -26,14 +35,43 @@ export function ResponsiveTitleText({ children, emphasis }) {
 }
 
 /**
- * Option price — same size as body copy.
+ * Option price — same size as title on all viewports.
  * @param {{ children: import('react').ReactNode }} props
  */
 export function ResponsivePriceText({ children }) {
   return (
-    <Text size="small" emphasis="bold" accessibilityRole="strong">
+    <Text size={OPTION_TEXT_SIZE} emphasis="bold" accessibilityRole="strong">
       {children}
     </Text>
+  );
+}
+
+/**
+ * Stepper label — matches compact body text on mobile.
+ * @param {{ children: import('react').ReactNode, emphasis?: 'bold' }} props
+ */
+function ResponsiveStepperText({ children, emphasis }) {
+  return (
+    <>
+      <View display={MOBILE_ONLY_DISPLAY}>
+        <Text
+          size={MOBILE_BODY_TEXT_SIZE}
+          emphasis={emphasis}
+          accessibilityRole={emphasis === 'bold' ? 'strong' : undefined}
+        >
+          {children}
+        </Text>
+      </View>
+      <View display={DESKTOP_ONLY_DISPLAY}>
+        <Text
+          size={OPTION_TEXT_SIZE}
+          emphasis={emphasis}
+          accessibilityRole={emphasis === 'bold' ? 'strong' : undefined}
+        >
+          {children}
+        </Text>
+      </View>
+    </>
   );
 }
 
@@ -113,9 +151,7 @@ export function GiftBagQuantitySelector({ quantity, onChange }) {
             minBlockSize={18}
             inlineAlignment="center"
           >
-            <Text size="small" emphasis="bold" accessibilityRole="strong">
-              -
-            </Text>
+            <ResponsiveStepperText emphasis="bold">-</ResponsiveStepperText>
           </View>
         </Pressable>
         <View
@@ -124,7 +160,7 @@ export function GiftBagQuantitySelector({ quantity, onChange }) {
           minBlockSize={18}
           inlineAlignment="center"
         >
-          <Text size="small">{quantity}</Text>
+          <ResponsiveStepperText>{quantity}</ResponsiveStepperText>
         </View>
         <Pressable
           onPress={() => onChange(quantity + 1)}
@@ -137,9 +173,7 @@ export function GiftBagQuantitySelector({ quantity, onChange }) {
             minBlockSize={18}
             inlineAlignment="center"
           >
-            <Text size="small" emphasis="bold" accessibilityRole="strong">
-              +
-            </Text>
+            <ResponsiveStepperText emphasis="bold">+</ResponsiveStepperText>
           </View>
         </Pressable>
       </InlineStack>
@@ -176,12 +210,12 @@ export function PackagingOptionRow({
     <InlineLayout
       columns={['fill', 'auto']}
       blockAlignment="start"
-      spacing="loose"
+      spacing={OPTION_ROW_SPACING}
     >
       <InlineLayout
         columns={['auto', 'fill']}
         blockAlignment="start"
-        spacing="loose"
+        spacing={OPTION_ROW_SPACING}
       >
         <Pressable
           onPress={onSelect}
@@ -189,10 +223,10 @@ export function PackagingOptionRow({
         >
           <PackagingRadioIndicator selected={selected} />
         </Pressable>
-        <BlockStack spacing="base">
+        <BlockStack spacing={TITLE_BODY_SPACING}>
           <InlineLayout
             columns={['fill', 'auto']}
-            blockAlignment="start"
+            blockAlignment="baseline"
             spacing="base"
           >
             <Pressable onPress={onSelect} accessibilityLabel={title}>
@@ -203,7 +237,7 @@ export function PackagingOptionRow({
           {children}
         </BlockStack>
       </InlineLayout>
-      <PackagingOptionLightboxImage
+      <PackagingOptionImageColumn
         source={imageSource}
         alt={imageAlt}
         modalId={modalId}

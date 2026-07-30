@@ -37,12 +37,18 @@ import {
   formatPackagingPrice,
   resolveVariantUnitPrice,
 } from './utils/packagingPriceUtils';
-import { PackagingOptionLightboxImage } from './components/PackagingOptionLightboxImage.jsx';
+import { PackagingOptionImageColumn } from './components/PackagingOptionLightboxImage.jsx';
 import {
   GiftBagQuantitySelector,
   ResponsiveTitleText,
   PackagingOptionRow,
 } from './components/PackagingOptionRow.jsx';
+import {
+  OPTION_ROW_PADDING,
+  OPTION_ROW_SPACING,
+  STEPPER_TOP_SPACING,
+  TITLE_BODY_SPACING,
+} from './components/responsiveLayout.js';
 import {
   GiftMessageHelperContent,
   OptionDescriptionContent,
@@ -228,7 +234,7 @@ function Extension() {
           cornerRadius={BLOCK_CORNER_RADIUS}
           overflow="hidden"
         >
-          <View padding="loose">
+          <View padding={OPTION_ROW_PADDING}>
             <PackagingOptionRow
               title={signatureTitle}
               price={signaturePriceLabel}
@@ -245,7 +251,7 @@ function Extension() {
             </PackagingOptionRow>
           </View>
           <Divider />
-          <View padding="loose">
+          <View padding={OPTION_ROW_PADDING}>
             <PackagingOptionRow
               title={giftBagTitle}
               price={giftBagPriceLabel}
@@ -259,7 +265,7 @@ function Extension() {
                 <OptionDescriptionContent text={giftBagDescription} />
                 {showStepper && (
                   <>
-                    <BlockSpacer spacing="base" />
+                    <BlockSpacer spacing={STEPPER_TOP_SPACING} />
                     <GiftBagQuantitySelector
                       quantity={giftBagQuantity}
                       onChange={handleStepperChange}
@@ -270,7 +276,7 @@ function Extension() {
             </PackagingOptionRow>
           </View>
           <Divider />
-          <View padding="loose">
+          <View padding={OPTION_ROW_PADDING}>
             <PackagingOptionRow
               title={luxuryTitle}
               price={luxuryPriceLabel}
@@ -300,23 +306,23 @@ function Extension() {
           cornerRadius={BLOCK_CORNER_RADIUS}
           overflow="hidden"
         >
-          <View padding="loose">
+          <View padding={OPTION_ROW_PADDING}>
             <InlineLayout
               columns={['fill', 'auto']}
               blockAlignment="start"
-              spacing="loose"
+              spacing={OPTION_ROW_SPACING}
             >
               <InlineLayout
                 columns={['auto', 'fill']}
                 blockAlignment="start"
-                spacing="loose"
+                spacing={OPTION_ROW_SPACING}
               >
                 <Checkbox
                   checked={isGift}
                   onChange={handleGiftToggle}
                   accessibilityLabel={giftTitle}
                 />
-                <BlockStack spacing="base">
+                <BlockStack spacing={TITLE_BODY_SPACING}>
                   <Pressable
                     onPress={() => handleGiftToggle(!isGift)}
                     accessibilityLabel={giftTitle}
@@ -328,7 +334,7 @@ function Extension() {
                   <OptionDescriptionContent text={giftDescription} />
                 </BlockStack>
               </InlineLayout>
-              <PackagingOptionLightboxImage
+              <PackagingOptionImageColumn
                 source={giftImageSource}
                 alt={giftTitle}
                 modalId="packaging-image-gift-order"

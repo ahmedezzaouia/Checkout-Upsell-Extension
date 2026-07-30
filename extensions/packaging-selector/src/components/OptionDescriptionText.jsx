@@ -1,12 +1,19 @@
 import { Fragment } from 'react';
 import {
+  View,
   TextBlock,
   Text,
   BlockStack,
   BlockSpacer,
 } from '@shopify/ui-extensions-react/checkout';
+import {
+  DESKTOP_ONLY_DISPLAY,
+  MOBILE_ONLY_DISPLAY,
+  PARAGRAPH_SPACING,
+} from './responsiveLayout.js';
 
-export const OPTION_DESCRIPTION_SIZE = 'small';
+const MOBILE_DESCRIPTION_SIZE = 'extraSmall';
+const DESKTOP_DESCRIPTION_SIZE = 'small';
 
 /**
  * Normalizes setting copy from the checkout editor.
@@ -78,9 +85,10 @@ export function resolveDescriptionSetting(settingValue, defaultValue) {
 /**
  * @param {string} paragraph
  * @param {string | undefined} boldPhrase
+ * @param {'extraSmall' | 'small'} size
  * @returns {import('react').ReactNode}
  */
-function renderParagraphWithBoldPhrase(paragraph, boldPhrase) {
+function renderParagraphWithBoldPhrase(paragraph, boldPhrase, size) {
   if (!boldPhrase || !paragraph.includes(boldPhrase)) {
     return paragraph;
   }
@@ -96,7 +104,7 @@ function renderParagraphWithBoldPhrase(paragraph, boldPhrase) {
       nodes.push(
         <Text
           key={`emphasis-${index}`}
-          size={OPTION_DESCRIPTION_SIZE}
+          size={size}
           appearance="subdued"
           emphasis="bold"
           accessibilityRole="strong"
@@ -111,12 +119,12 @@ function renderParagraphWithBoldPhrase(paragraph, boldPhrase) {
 }
 
 /**
- * Description copy — small size, subdued grey body text.
- * @param {{ children: import('react').ReactNode }} props
+ * Description copy — subdued grey body text, one size step smaller on mobile.
+ * @param {{ children: import('react').ReactNode, size: 'extraSmall' | 'small' }} props
  */
-export function OptionDescriptionText({ children }) {
+function OptionDescriptionText({ children, size }) {
   return (
-    <TextBlock size={OPTION_DESCRIPTION_SIZE} appearance="subdued">
+    <TextBlock size={size} appearance="subdued">
       {children}
     </TextBlock>
   );
@@ -137,10 +145,25 @@ export function OptionDescriptionContent({ text, boldPhrase }) {
     <BlockStack spacing="none">
       {paragraphs.map((paragraph, index) => (
         <Fragment key={index}>
-          {index > 0 && <BlockSpacer spacing="base" />}
-          <OptionDescriptionText>
-            {renderParagraphWithBoldPhrase(paragraph, boldPhrase)}
-          </OptionDescriptionText>
+          {index > 0 && <BlockSpacer spacing={PARAGRAPH_SPACING} />}
+          <View display={MOBILE_ONLY_DISPLAY} opacity={90}>
+            <OptionDescriptionText size={MOBILE_DESCRIPTION_SIZE}>
+              {renderParagraphWithBoldPhrase(
+                paragraph,
+                boldPhrase,
+                MOBILE_DESCRIPTION_SIZE,
+              )}
+            </OptionDescriptionText>
+          </View>
+          <View display={DESKTOP_ONLY_DISPLAY}>
+            <OptionDescriptionText size={DESKTOP_DESCRIPTION_SIZE}>
+              {renderParagraphWithBoldPhrase(
+                paragraph,
+                boldPhrase,
+                DESKTOP_DESCRIPTION_SIZE,
+              )}
+            </OptionDescriptionText>
+          </View>
         </Fragment>
       ))}
     </BlockStack>

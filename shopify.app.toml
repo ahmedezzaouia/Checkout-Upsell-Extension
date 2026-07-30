@@ -1,8 +1,10 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+#
+# Test app (TW Checkout). Prod Daisy London client_id:
+# a5de122221a3d77d428f285b7082c36a
 
-client_id = "a5de122221a3d77d428f285b7082c36a"
-name = "Daisy London"
-handle = "daisy-london"
+client_id = "bebe3187edaec0e3514d41dddf688ca1"
+name = "TW Checkout"
 application_url = "https://shopify.dev/apps/default-app-home"
 embedded = true
 
