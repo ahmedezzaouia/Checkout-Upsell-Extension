@@ -1,39 +1,30 @@
 /**
  * Square packaging thumbnail with Modal lightbox (image-only overlay).
  */
-import {
-  Pressable,
-  Modal,
-  View,
-  Image,
-  Style,
-} from '@shopify/ui-extensions-react/checkout';
+import { responsive } from './responsiveLayout.js';
 
 const BLOCK_CORNER_RADIUS = 'none';
 
-/** Mobile slightly larger for visual weight; desktop unchanged at 107px */
-export const PACKAGING_IMAGE_BLOCK_SIZE = Style.default(102).when(
-  { viewportInlineSize: { min: 'medium' } },
-  107,
-);
+/**
+ * Content + image columns. The image track width sets the square thumbnail
+ * size (min/max size props don't accept container queries, grid tracks do).
+ * Mobile slightly larger for visual weight; desktop unchanged at 107px.
+ */
+export const IMAGE_ROW_COLUMNS = responsive("'1fr 107px'", "'1fr 102px'");
 
 /**
- * Top-aligned image column — fixed block size keeps the thumbnail aligned with the title row.
+ * Top-aligned image column — fills the image track of IMAGE_ROW_COLUMNS.
  * @param {{ source: string, alt: string, modalId: string }} props
  */
 export function PackagingOptionImageColumn({ source, alt, modalId }) {
   return (
-    <View
-      minBlockSize={PACKAGING_IMAGE_BLOCK_SIZE}
-      maxBlockSize={PACKAGING_IMAGE_BLOCK_SIZE}
-      inlineAlignment="end"
-    >
+    <s-box>
       <PackagingOptionLightboxImage
         source={source}
         alt={alt}
         modalId={modalId}
       />
-    </View>
+    </s-box>
   );
 }
 
@@ -43,41 +34,35 @@ export function PackagingOptionImageColumn({ source, alt, modalId }) {
  */
 export function PackagingOptionLightboxImage({ source, alt, modalId }) {
   return (
-    <Pressable
-      accessibilityLabel={`View larger image: ${alt}`}
-      overlay={
-        <Modal
-          id={modalId}
-          accessibilityLabel={`Enlarged image: ${alt}`}
-          size="max"
-          padding={false}
-        >
-          <Image
-            source={source}
-            accessibilityDescription={alt}
-            fit="contain"
-            aspectRatio={1}
-            loading="eager"
-          />
-        </Modal>
-      }
-    >
-      <View
-        minInlineSize={PACKAGING_IMAGE_BLOCK_SIZE}
-        maxInlineSize={PACKAGING_IMAGE_BLOCK_SIZE}
-        minBlockSize={PACKAGING_IMAGE_BLOCK_SIZE}
-        maxBlockSize={PACKAGING_IMAGE_BLOCK_SIZE}
-        cornerRadius={BLOCK_CORNER_RADIUS}
-        overflow="hidden"
+    <>
+      <s-clickable
+        command="--show"
+        commandFor={modalId}
+        accessibilityLabel={`View larger image: ${alt}`}
+        inlineSize="100%"
       >
-        <Image
-          source={source}
+        <s-image
+          src={source}
           alt={alt}
-          aspectRatio={1}
-          fit="cover"
-          cornerRadius={BLOCK_CORNER_RADIUS}
+          aspectRatio="1"
+          objectFit="cover"
+          borderRadius={BLOCK_CORNER_RADIUS}
         />
-      </View>
-    </Pressable>
+      </s-clickable>
+      <s-modal
+        id={modalId}
+        accessibilityLabel={`Enlarged image: ${alt}`}
+        size="max"
+        padding="none"
+      >
+        <s-image
+          src={source}
+          alt={alt}
+          objectFit="contain"
+          aspectRatio="1"
+          loading="eager"
+        />
+      </s-modal>
+    </>
   );
 }

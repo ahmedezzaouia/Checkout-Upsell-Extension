@@ -1,19 +1,7 @@
-import { Fragment } from 'react';
-import {
-  View,
-  TextBlock,
-  Text,
-  BlockStack,
-  BlockSpacer,
-} from '@shopify/ui-extensions-react/checkout';
-import {
-  DESKTOP_ONLY_DISPLAY,
-  MOBILE_ONLY_DISPLAY,
-  PARAGRAPH_SPACING,
-} from './responsiveLayout.js';
+import { PARAGRAPH_SPACING } from './responsiveLayout.js';
 
-const MOBILE_DESCRIPTION_SIZE = 'extraSmall';
-const DESKTOP_DESCRIPTION_SIZE = 'small';
+/** Smallest paragraph type available in Polaris web components */
+const DESCRIPTION_TYPE = 'small';
 
 /**
  * Normalizes setting copy from the checkout editor.
@@ -85,10 +73,9 @@ export function resolveDescriptionSetting(settingValue, defaultValue) {
 /**
  * @param {string} paragraph
  * @param {string | undefined} boldPhrase
- * @param {'extraSmall' | 'small'} size
- * @returns {import('react').ReactNode}
+ * @returns {import('preact').ComponentChildren}
  */
-function renderParagraphWithBoldPhrase(paragraph, boldPhrase, size) {
+function renderParagraphWithBoldPhrase(paragraph, boldPhrase) {
   if (!boldPhrase || !paragraph.includes(boldPhrase)) {
     return paragraph;
   }
@@ -102,15 +89,13 @@ function renderParagraphWithBoldPhrase(paragraph, boldPhrase, size) {
 
     if (index < parts.length - 1) {
       nodes.push(
-        <Text
+        <s-text
           key={`emphasis-${index}`}
-          size={size}
-          appearance="subdued"
-          emphasis="bold"
-          accessibilityRole="strong"
+          type="strong"
+          color="subdued"
         >
           {boldPhrase}
-        </Text>,
+        </s-text>,
       );
     }
 
@@ -119,14 +104,14 @@ function renderParagraphWithBoldPhrase(paragraph, boldPhrase, size) {
 }
 
 /**
- * Description copy — subdued grey body text, one size step smaller on mobile.
- * @param {{ children: import('react').ReactNode, size: 'extraSmall' | 'small' }} props
+ * Description copy — subdued grey small body text.
+ * @param {{ children: import('preact').ComponentChildren }} props
  */
-function OptionDescriptionText({ children, size }) {
+function OptionDescriptionText({ children }) {
   return (
-    <TextBlock size={size} appearance="subdued">
+    <s-paragraph type={DESCRIPTION_TYPE} color="subdued">
       {children}
-    </TextBlock>
+    </s-paragraph>
   );
 }
 
@@ -142,31 +127,13 @@ export function OptionDescriptionContent({ text, boldPhrase }) {
   }
 
   return (
-    <BlockStack spacing="none">
+    <s-stack gap={PARAGRAPH_SPACING}>
       {paragraphs.map((paragraph, index) => (
-        <Fragment key={index}>
-          {index > 0 && <BlockSpacer spacing={PARAGRAPH_SPACING} />}
-          <View display={MOBILE_ONLY_DISPLAY} opacity={90}>
-            <OptionDescriptionText size={MOBILE_DESCRIPTION_SIZE}>
-              {renderParagraphWithBoldPhrase(
-                paragraph,
-                boldPhrase,
-                MOBILE_DESCRIPTION_SIZE,
-              )}
-            </OptionDescriptionText>
-          </View>
-          <View display={DESKTOP_ONLY_DISPLAY}>
-            <OptionDescriptionText size={DESKTOP_DESCRIPTION_SIZE}>
-              {renderParagraphWithBoldPhrase(
-                paragraph,
-                boldPhrase,
-                DESKTOP_DESCRIPTION_SIZE,
-              )}
-            </OptionDescriptionText>
-          </View>
-        </Fragment>
+        <OptionDescriptionText key={index}>
+          {renderParagraphWithBoldPhrase(paragraph, boldPhrase)}
+        </OptionDescriptionText>
       ))}
-    </BlockStack>
+    </s-stack>
   );
 }
 

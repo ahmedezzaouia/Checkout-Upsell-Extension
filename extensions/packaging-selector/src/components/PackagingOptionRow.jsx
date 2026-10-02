@@ -1,81 +1,46 @@
 import {
-  Pressable,
-  View,
-  Text,
-  Image,
-  InlineLayout,
-  InlineStack,
-  BlockStack,
-} from '@shopify/ui-extensions-react/checkout';
-import { PackagingOptionImageColumn } from './PackagingOptionLightboxImage.jsx';
+  IMAGE_ROW_COLUMNS,
+  PackagingOptionImageColumn,
+} from './PackagingOptionLightboxImage.jsx';
 import {
-  DESKTOP_ONLY_DISPLAY,
-  MOBILE_ONLY_DISPLAY,
   OPTION_ROW_SPACING,
   TITLE_BODY_SPACING,
 } from './responsiveLayout.js';
 
-const MOBILE_BODY_TEXT_SIZE = 'extraSmall';
-const OPTION_TEXT_SIZE = 'small';
+const OPTION_TEXT_TYPE = 'small';
 
 /**
  * Option title — stays small on all viewports for hierarchy over body copy.
- * @param {{ children: import('react').ReactNode, emphasis?: 'bold' }} props
+ * @param {{ children: import('preact').ComponentChildren, emphasis?: 'bold' }} props
  */
 export function ResponsiveTitleText({ children, emphasis }) {
   return (
-    <Text
-      size={OPTION_TEXT_SIZE}
-      emphasis={emphasis}
-      accessibilityRole={emphasis === 'bold' ? 'strong' : undefined}
-    >
-      {children}
-    </Text>
+    <s-paragraph type={OPTION_TEXT_TYPE}>
+      {emphasis === 'bold' ? <s-text type="strong">{children}</s-text> : children}
+    </s-paragraph>
   );
 }
 
 /**
  * Option price — same size as title on all viewports.
- * @param {{ children: import('react').ReactNode }} props
+ * @param {{ children: import('preact').ComponentChildren }} props
  */
 export function ResponsivePriceText({ children }) {
-  return (
-    <Text size={OPTION_TEXT_SIZE} emphasis="bold" accessibilityRole="strong">
-      {children}
-    </Text>
-  );
+  return <ResponsiveTitleText emphasis="bold">{children}</ResponsiveTitleText>;
 }
 
 /**
- * Stepper label — matches compact body text on mobile.
- * @param {{ children: import('react').ReactNode, emphasis?: 'bold' }} props
+ * Stepper label — same small text as option titles.
+ * @param {{ children: import('preact').ComponentChildren, emphasis?: 'bold' }} props
  */
 function ResponsiveStepperText({ children, emphasis }) {
   return (
-    <>
-      <View display={MOBILE_ONLY_DISPLAY}>
-        <Text
-          size={MOBILE_BODY_TEXT_SIZE}
-          emphasis={emphasis}
-          accessibilityRole={emphasis === 'bold' ? 'strong' : undefined}
-        >
-          {children}
-        </Text>
-      </View>
-      <View display={DESKTOP_ONLY_DISPLAY}>
-        <Text
-          size={OPTION_TEXT_SIZE}
-          emphasis={emphasis}
-          accessibilityRole={emphasis === 'bold' ? 'strong' : undefined}
-        >
-          {children}
-        </Text>
-      </View>
-    </>
+    <ResponsiveTitleText emphasis={emphasis}>{children}</ResponsiveTitleText>
   );
 }
 
-const RADIO_SIZE = 20;
+const RADIO_SIZE = '20px';
+const STEPPER_CELL_SIZE = '18px';
 const BLOCK_CORNER_RADIUS = 'none';
 
 /**
@@ -107,19 +72,36 @@ const RADIO_UNSELECTED_SRC = svgDataUri(
  */
 function PackagingRadioIndicator({ selected }) {
   return (
-    <View
+    <s-box
       minInlineSize={RADIO_SIZE}
       maxInlineSize={RADIO_SIZE}
       minBlockSize={RADIO_SIZE}
       maxBlockSize={RADIO_SIZE}
     >
-      <Image
-        source={selected ? RADIO_SELECTED_SRC : RADIO_UNSELECTED_SRC}
-        accessibilityDescription=""
-        aspectRatio={1}
-        fit="contain"
+      <s-image
+        src={selected ? RADIO_SELECTED_SRC : RADIO_UNSELECTED_SRC}
+        alt=""
+        aspectRatio="1"
+        objectFit="contain"
       />
-    </View>
+    </s-box>
+  );
+}
+
+/**
+ * Fixed-size centered cell for stepper symbols and quantity.
+ * @param {{ children: import('preact').ComponentChildren }} props
+ */
+function StepperCell({ children }) {
+  return (
+    <s-stack
+      minInlineSize={STEPPER_CELL_SIZE}
+      maxInlineSize={STEPPER_CELL_SIZE}
+      minBlockSize={STEPPER_CELL_SIZE}
+      alignItems="center"
+    >
+      {children}
+    </s-stack>
   );
 }
 
@@ -129,55 +111,39 @@ function PackagingRadioIndicator({ selected }) {
  */
 export function GiftBagQuantitySelector({ quantity, onChange }) {
   return (
-    <View
+    <s-box
       border="base"
-      cornerRadius={BLOCK_CORNER_RADIUS}
-      padding="extraTight"
-      maxInlineSize={80}
+      borderRadius={BLOCK_CORNER_RADIUS}
+      padding="small-400"
+      maxInlineSize="80px"
     >
-      <InlineStack
-        spacing="tight"
-        blockAlignment="center"
-        inlineAlignment="center"
+      <s-stack
+        direction="inline"
+        gap="small-200"
+        alignItems="center"
+        justifyContent="center"
       >
-        <Pressable
-          onPress={() => onChange(quantity - 1)}
+        <s-clickable
+          onClick={() => onChange(quantity - 1)}
           disabled={quantity <= 1}
         >
-          <View
-            padding="none"
-            minInlineSize={18}
-            maxInlineSize={18}
-            minBlockSize={18}
-            inlineAlignment="center"
-          >
+          <StepperCell>
             <ResponsiveStepperText emphasis="bold">-</ResponsiveStepperText>
-          </View>
-        </Pressable>
-        <View
-          minInlineSize={18}
-          maxInlineSize={18}
-          minBlockSize={18}
-          inlineAlignment="center"
-        >
+          </StepperCell>
+        </s-clickable>
+        <StepperCell>
           <ResponsiveStepperText>{quantity}</ResponsiveStepperText>
-        </View>
-        <Pressable
-          onPress={() => onChange(quantity + 1)}
+        </StepperCell>
+        <s-clickable
+          onClick={() => onChange(quantity + 1)}
           disabled={quantity >= 10}
         >
-          <View
-            padding="none"
-            minInlineSize={18}
-            maxInlineSize={18}
-            minBlockSize={18}
-            inlineAlignment="center"
-          >
+          <StepperCell>
             <ResponsiveStepperText emphasis="bold">+</ResponsiveStepperText>
-          </View>
-        </Pressable>
-      </InlineStack>
-    </View>
+          </StepperCell>
+        </s-clickable>
+      </s-stack>
+    </s-box>
   );
 }
 
@@ -191,7 +157,7 @@ export function GiftBagQuantitySelector({ quantity, onChange }) {
  *   imageSource: string,
  *   imageAlt: string,
  *   modalId: string,
- *   children: import('react').ReactNode,
+ *   children: import('preact').ComponentChildren,
  * }} props
  */
 export function PackagingOptionRow({
@@ -207,41 +173,41 @@ export function PackagingOptionRow({
   const selectionLabel = `${title}, ${selected ? 'selected' : 'not selected'}`;
 
   return (
-    <InlineLayout
-      columns={['fill', 'auto']}
-      blockAlignment="start"
-      spacing={OPTION_ROW_SPACING}
+    <s-grid
+      gridTemplateColumns={IMAGE_ROW_COLUMNS}
+      alignItems="start"
+      gap={OPTION_ROW_SPACING}
     >
-      <InlineLayout
-        columns={['auto', 'fill']}
-        blockAlignment="start"
-        spacing={OPTION_ROW_SPACING}
+      <s-grid
+        gridTemplateColumns="auto 1fr"
+        alignItems="start"
+        gap={OPTION_ROW_SPACING}
       >
-        <Pressable
-          onPress={onSelect}
+        <s-clickable
+          onClick={onSelect}
           accessibilityLabel={selectionLabel}
         >
           <PackagingRadioIndicator selected={selected} />
-        </Pressable>
-        <BlockStack spacing={TITLE_BODY_SPACING}>
-          <InlineLayout
-            columns={['fill', 'auto']}
-            blockAlignment="baseline"
-            spacing="base"
+        </s-clickable>
+        <s-stack gap={TITLE_BODY_SPACING}>
+          <s-grid
+            gridTemplateColumns="1fr auto"
+            alignItems="baseline"
+            gap="base"
           >
-            <Pressable onPress={onSelect} accessibilityLabel={title}>
+            <s-clickable onClick={onSelect} accessibilityLabel={title}>
               <ResponsiveTitleText emphasis="bold">{title}</ResponsiveTitleText>
-            </Pressable>
+            </s-clickable>
             {price && <ResponsivePriceText>{price}</ResponsivePriceText>}
-          </InlineLayout>
+          </s-grid>
           {children}
-        </BlockStack>
-      </InlineLayout>
+        </s-stack>
+      </s-grid>
       <PackagingOptionImageColumn
         source={imageSource}
         alt={imageAlt}
         modalId={modalId}
       />
-    </InlineLayout>
+    </s-grid>
   );
 }
